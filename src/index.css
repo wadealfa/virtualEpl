@@ -14,11 +14,11 @@
   --lapis-lazuli: #1e6091ff;
   --indigo-dye: #184e77ff;
 } */
-body {
+html,body {
   font-family: "Nunito", sans-serif;
   color: white;
-  height: 100000vh;
   background: linear-gradient(to top right, #1e3a8a, #1140c0, #061236);
+  min-height: 100vh;
   background-repeat: no-repeat;
   z-index: -1;
 }

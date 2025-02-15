@@ -9,7 +9,7 @@ function App() {
   // efc
   return (
     <Provider store={store}>
-      <div className=" h-[100vh]">
+      <div className=" ">
         <BrowserRouter>
 
           <AppLayout />
