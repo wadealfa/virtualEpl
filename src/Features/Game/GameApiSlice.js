@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const GameApiSlice = createApi({
   reducerPath: "gameApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://virtualepl-node-4.onrender.com/api",
+    baseUrl: "https://virtualepl-node-1.onrender.com/api",
     prepareHeaders: (headers, { getState }) => {
       console.log("Making request with headers:", headers);
       return headers;
