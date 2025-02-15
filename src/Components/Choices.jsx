@@ -1,43 +1,123 @@
-import { useState } from "react";
-import {
-  useGetMatchesQuery,
-  usePostPlayerChoiceMutation,
-} from "../Features/Game/GameApiSlice";
-import Alert from "./Alert";
+import { motion, spring} from "framer-motion";
+import { useState, useEffect } from "react";
+import { useGetMatchesQuery } from "../Features/Game/GameApiSlice";
 import { choiceEnter } from "../Features/Game/GameSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-function Choices({}) {
-  const { data,  error } = useGetMatchesQuery();
-  const match = data?.matches[0];
-  const {choice,isLoading} = useSelector((state) => state.game);
+function Choices() {
+  const { data, error } = useGetMatchesQuery();
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+  const { choice, isLoading } = useSelector((state) => state.game);
   const dispatch = useDispatch();
 
-  const handleSubmit = async (e) => {
+  const choiceVariants = {
+    initial: {
+      x: "-200vw",
+    },
+    final: {
+      x: 0,
+      transition: {
+        type: spring,
+        stiffness: 100,
+      },
+    },
+  };
+
+  // Automatically change the match every 15 seconds
+  useEffect(() => {
+    if (data?.matches?.length > 0) {
+      const interval = setInterval(() => {
+        setCurrentMatchIndex(
+          (prevIndex) => (prevIndex + 1) % data.matches.length
+        );
+      }, 15000);
+
+      return () => clearInterval(interval); // Cleanup interval on unmount
+    }
+  }, [data]);
+
+  const match = data?.matches?.[currentMatchIndex];
+
+  const handleSubmit = (e) => {
     const selectedChoice = e.currentTarget.value;
     dispatch(choiceEnter(selectedChoice));
   };
-  console.log("choice", choice);
 
   return (
     <div>
-      <div className="flex  flex-col gap-2 p-0 m-0 text-2xl">
-        {match?.map((game, index) => (
-          <button disabled={isLoading}
-            onClick={handleSubmit}
-            className={isLoading?"bg-gray-400 rounded-md p-1":`focus:bg-[#ff6600] p-1 border-2 rounded-md `}
-            key={index}
-            value={game.oddId}>
-            {game.type}
-            <p>{game.odds}</p>
-          </button>
-        ))}
-      </div>
+      {match ? (
+        <div className="flex flex-col gap-2 p-0 m-0 text-2xl">
+          {match.map((game, index) => (
+            <motion.button exitbeforeentry
+            variants={choiceVariants}
+            initial='initial'
+            animate='final'
+              disabled={isLoading}
+              onClick={handleSubmit}
+              className={
+                isLoading
+                  ? "bg-gray-400 rounded-md p-1"
+                  : "focus:bg-[#ff6600] p-1 border-2 rounded-md"
+              }
+              key={index}
+              value={game.oddId}>
+              {game.type}
+              <p>{game.odds}</p>
+            </motion.button>
+          ))}
+        </div>
+      ) : (
+        <p>Loading matches...</p>
+      )}
     </div>
   );
 }
 
 export default Choices;
+
+// +========================================================================================
+
+// import { useState } from "react";
+// import {
+//   useGetMatchesQuery,
+//   usePostPlayerChoiceMutation,
+// } from "../Features/Game/GameApiSlice";
+// import Alert from "./Alert";
+// import { choiceEnter } from "../Features/Game/GameSlice";
+// import { useDispatch, useSelector } from "react-redux";
+
+// function Choices({}) {
+// const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+//   const { data,  error } = useGetMatchesQuery();
+//   const match = data?.matches[currentMatchIndex];
+//   const {choice,isLoading} = useSelector((state) => state.game);
+//   const dispatch = useDispatch();
+
+//   const handleSubmit = async (e) => {
+//     const selectedChoice = e.currentTarget.value;
+//     dispatch(choiceEnter(selectedChoice));
+//   };
+//   console.log("choice", choice);
+
+//   return (
+//     <div>
+//       <div className="flex  flex-col gap-2 p-0 m-0 text-2xl">
+//         {match?.map((game, index) => (
+//           <button disabled={isLoading}
+//             onClick={handleSubmit}
+//             className={isLoading?"bg-gray-400 rounded-md p-1":`focus:bg-[#ff6600] p-1 border-2 rounded-md `}
+//             key={index}
+//             value={game.oddId}>
+//             {game.type}
+//             <p>{game.odds}</p>
+//           </button>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Choices;
 
 {
   /* <div className="flex  flex-col gap-2 p-0 m-0 text-2xl">

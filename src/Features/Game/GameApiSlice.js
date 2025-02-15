@@ -5,7 +5,6 @@ export const GameApiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://virtualepl-node-1.onrender.com/api",
     prepareHeaders: (headers, { getState }) => {
-      console.log("Making request with headers:", headers);
       return headers;
     },
   }),

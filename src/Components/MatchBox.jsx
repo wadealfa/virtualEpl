@@ -1,12 +1,51 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Choices from "./Choices";
 import PlayAmount from "./PlayAmount";
 import Queue from "./Queue";
+import { useDispatch, useSelector } from "react-redux";
+import { betEnterComplete, load, submitChoice } from "../Features/Game/GameSlice";
 
 function MatchBox() {
-  const [choice, setChoice] = useState(0);
-  const [chosenamount, setChosenAmount] = useState(0);
-  const amounts = [10, 20, 50, 100];
+  const dispatch = useDispatch();
+  const{choice}= useSelector(state=>state.game)
+  const intervalRef = useRef(null);
+  const counterRef = useRef(0);
+  
+  useEffect(() => {
+    if (!intervalRef.current) {
+      intervalRef.current = setInterval(() => {
+        counterRef.current += 1;
+        if (counterRef.current === 3) {
+          console.log("first 3");
+        } else if (counterRef.current === 10) {
+          // dispatch(load());
+
+          console.log("second to 10");
+          if (choice === null) {
+            return;
+          }
+          // dispatch(playSubmit());
+        } else if (counterRef.current === 15) {
+          console.log("third to 20");
+
+          dispatch(betEnterComplete());
+          dispatch(submitChoice());
+
+          counterRef.current = 0;
+        }
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        console.log("Clearing interval:", intervalRef.current);
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [dispatch]);
+
+
 
   return (
     <div className="flex flex-col gap-5 ">
@@ -20,15 +59,8 @@ function MatchBox() {
           />
         </div>
         <div className=" p-1 w-[100%] grid gap-2  ">
-          <Choices
-            choice={choice}
-            setChoice={setChoice}
-          />
-          <PlayAmount
-            amounts={amounts}
-            setChosenAmount={setChosenAmount}
-            choice={choice}
-          />
+          <Choices />
+          <PlayAmount />
         </div>
       </div>
       <div className=" w-[100%]">

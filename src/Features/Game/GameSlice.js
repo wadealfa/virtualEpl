@@ -85,26 +85,26 @@ export const {
 
 export default gameSlice.reducer;
 
-export function loadMatch() {
-  //   console.log("Load function called");
-  return async function (dispatch) {
-    // console.log("Inside async function");
-    try {
-      console.log("Before loadMatches");
-      const matches = await loadMatches();
-      //   console.log(matches);
-      console.log("after loadMatches");
+// export function loadMatch() {
+//   //   console.log("Load function called");
+//   return async function (dispatch) {
+//     // console.log("Inside async function");
+//     try {
+//       console.log("Before loadMatches");
+//       const matches = await loadMatches();
+//       //   console.log(matches);
+//       console.log("after loadMatches");
 
-      //   dispatch({ type: "load", payload: matches });
-      dispatch(gameSlice.actions.load(matches)); // ✅ Use the auto-generated action
-    } catch (error) {
-      console.log(error);
-    }
-  };
+//       //   dispatch({ type: "load", payload: matches });
+//       dispatch(gameSlice.actions.load(matches)); // ✅ Use the auto-generated action
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
 
   //   const matches = loadMatches().then(matches=>console.log(matches));
   // console.log(matches)
-}
+// }
 
 export function submitChoice() {
   return async function (dispatch, getState) {
@@ -113,10 +113,13 @@ export function submitChoice() {
     const playAmount = state.game.playAmount;
 
     if (!choice || playAmount === 0) {
+      console.log("pre load dispatch")
       dispatch(load());
       return;
     }
     dispatch(betEnterComplete());
+    console.log("pre betEnterComplete dispatch")
+
     try {
       const response = await dispatch(
         GameApiSlice.endpoints.postPlayerChoice.initiate({
@@ -124,7 +127,10 @@ export function submitChoice() {
           betAmount: playAmount,
         })
       ).unwrap();
+
       dispatch(results(response));
+      console.log("post results dispatch")
+
     } catch (error) {
       console.log(error);
     }
