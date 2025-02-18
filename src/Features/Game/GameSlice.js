@@ -8,12 +8,14 @@ const initialGameState = {
   status: "",
   balance: 1000, //or try null and see what happens
   isLoading: false,
+  isSelectedChoice:false,
+  isSelectedAmount:false,
   matches: [],
   results: [],
   message:
     "congratulations ..... your streak of luck has arrived🎉🎊.Wanna give it another go?You might win more.",
   amountWon: null,
-  choice: null,
+  choice:0,
   playAmount: 0,
 };
 
@@ -31,11 +33,13 @@ const gameSlice = createSlice({
     },
     choiceEnter(state, action) {
       state.status = "choiceEntry";
+      state.isSelectedChoice=true;
       state.choice = action.payload;
     },
     playAmountEnter(state, action) {
       state.status = "playAmountEntry";
       state.playAmount = action.payload;
+      state.isSelectedAmount=true;
     },
     betEnterComplete(state) {
       state.isLoading = true;

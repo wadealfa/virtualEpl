@@ -1,4 +1,4 @@
-import { motion, spring} from "framer-motion";
+import { motion, spring } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useGetMatchesQuery } from "../Features/Game/GameApiSlice";
 import { choiceEnter } from "../Features/Game/GameSlice";
@@ -10,6 +10,7 @@ function Choices() {
   const { choice, isLoading } = useSelector((state) => state.game);
   const dispatch = useDispatch();
 
+  // console.log(choice)
   const choiceVariants = {
     initial: {
       x: "-200vw",
@@ -35,11 +36,14 @@ function Choices() {
       return () => clearInterval(interval); // Cleanup interval on unmount
     }
   }, [data]);
+  // console.log("choice",choice)
 
   const match = data?.matches?.[currentMatchIndex];
 
   const handleSubmit = (e) => {
-    const selectedChoice = e.currentTarget.value;
+    e.preventDefault();
+    const selectedChoice = Number(e.currentTarget.value);
+
     dispatch(choiceEnter(selectedChoice));
   };
 
@@ -48,16 +52,19 @@ function Choices() {
       {match ? (
         <div className="flex flex-col gap-2 p-0 m-0 text-2xl">
           {match.map((game, index) => (
-            <motion.button exitbeforeentry
-            variants={choiceVariants}
-            initial='initial'
-            animate='final'
+            <motion.button
+              layout
+              variants={choiceVariants}
+              initial="initial"
+              animate="final"
               disabled={isLoading}
               onClick={handleSubmit}
               className={
-                isLoading
-                  ? "bg-gray-400 rounded-md p-1"
-                  : "focus:bg-[#ff6600] p-1 border-2 rounded-md"
+                choice === game?.oddId
+                  ? "bg-[#ff6600] rounded-2xl"
+                  : ` border-2 rounded-md ${
+                      isLoading ? "bg-gray-400 rounded-md p-1" : ""
+                    } `
               }
               key={index}
               value={game.oddId}>
