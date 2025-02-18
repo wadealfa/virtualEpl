@@ -65,7 +65,7 @@ function MatchBox() {
         </div>
         <div className=" w-[100%] grid gap-2">
           {isLoading && (
-            <div className=" min-w-[170px] min-h-[340px] rounded-lg  absolute  bg-[rgba(177,174,174,0.66)]">
+            <div className=" min-w-[170px] sm:min-w-full md:min-w-full min-h-[340px] rounded-lg  absolute  bg-[rgba(177,174,174,0.66)]">
               </div>
             )}
               <Choices />
